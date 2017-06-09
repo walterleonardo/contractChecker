@@ -1,0 +1,297 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/paper-input/paper-input.html">
+<link rel="import" href="bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="bower_components/paper-item/paper-item.html">
+<link rel="import" href="bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="bower_components/iron-form/iron-form.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="bower_components/app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="shared-styles.html">
+
+<!--
+`polymer1-elem01`
+
+
+@demo demo/index.html
+-->
+
+<dom-module id="polymer1-element-checkReservations">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+                padding: 10px;
+            }
+
+            paper-dropdown-menu {
+                width: 98%;
+            }
+
+            table {
+                font-family: arial, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            td, th {
+                border: 1px solid #dddddd;
+                text-align: left;
+            }
+
+            tr:nth-child(even) {
+                background-color: #dddddd;
+            }
+
+            .card {
+                box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+            }
+        </style>
+        <title>Reservation checker</title>
+
+        <div class="container flex-center-justified">
+            <div class="card">
+                    <select id='lang' name='lang' class='language-select' value="{{hostValue::change}}">
+                        <option id='en' value='en' selected="{{!languageEN}}">English</option>
+                        <option id='es' value='es' selected="{{!languageEN}}">Spanish</option>
+                    </select>
+                <h1>{{localize('tittle')}}</h1>
+
+                <h3>{{localize('subtittle')}}</h3>
+
+
+                <form is="iron-form" method="get" action="http://localhost:63342/SimplePHPRestful/APIREST/index.php?"
+                      id="formLogin">
+                    <paper-input char-counter error-message="{{localize('error')}}" name="p" value="{{inputData}}"
+                                 label="{{localize('input')}}" maxlength="25" required></paper-input>
+
+                    <br><br>
+                    <!--<h3>{{localize('text')}}</h3>-->
+
+                    <div hidden="[[!debug]]">
+                        <h2>Test information TO DELETE</h2>
+                        <p>Usuario OK TIH0000742T .</p>
+                        <p>Usuario no existe aun 1493730866128 .</p>
+                        <p>Usuario no lo encuentra estanolaencuentra .</p>
+                        <br>example output<br>
+                        {"result":"ok","service":{"flight":"FR3542","preferredVehicle":"","leadName":"Jessica Smeets  x  2","office":"Ibiza","total":80.37,"pickupTime":"09:00","startddmmyyyy":"27/04/2017","iva":7.31,"id":24,"agencyReference":"TIH0000742T","direction":"OUTBOUND","comments":"PRIVATE TRANSFER  =  80,37 â‚¬ PT","agency":"WEB INVISA HOTELES","flightDate":"2017-Apr-27","created":"2017-04-12T13:10:39.196","pax":2,"flightOriginOrDestination":"EINDHOVEN","start":{"year":2017,"month":"APRIL","dayOfMonth":27,"dayOfWeek":"THURSDAY","era":"CE","dayOfYear":117,"leapYear":false,"monthValue":4,"chronology":{"calendarType":"iso8601","id":"ISO"}},"dropoff":"Aeropuerto / Airport Ibiza","pickup":"INVISA HOTELES CLUB CALA BLANCA","pickupResort":"Figueral","valued":true,"purchaseValued":false,"dropoffResort":"Ibiza ","pickupDate":"Thu 27 Apr","transferType":"PRIVATE","flightTime":"11:50","locator":12,"totalCost":0.0,"providers":"IbizaTours & IslandBus","status":"ACTIVE","base":73.06},"message":"Found booking with reference TIH0000742T"}
+                    </div>
+                    <paper-button raised onclick="_submit(event)"> {{localize('button')}}</paper-button>
+                    <paper-spinner id="spinner" hidden></paper-spinner>
+
+
+                </form>
+                <div hidden="[[!debug]]">
+                    <h3>Output</h3>
+                    <div class="output"></div>
+                    <br>
+                    <h3>Answer from server</h3>
+                    <div class="outputServer"></div>
+                    <br>
+                </div>
+
+
+                <div id="respuesta" class="respuesta">
+                    <h2 style="color: red; font-style: oblique">{{errorMessage}} </h2>
+                    <div hidden="{{!show}}">
+                        <span style="color:#71a83b">{{localize('nombrecliente')}} </span>
+                        <br><span style="color:black ;font-weight: bold;">{{answer.user_fullname}}</span>
+                        <br>
+                        <span style="color:#71a83b">{{localize('telefono')}} </span>
+                        <br><span style="color:black ;font-weight: bold;">{{answer.telefono}}</span>
+                        <br>
+
+                        <hr>
+                        <span style="color:#71a83b">{{localize('hotel')}} </span>
+                        <br><span style="color:black ;font-weight: bold;">{{answer.hotel}}</span>
+                        <br>
+                        <span style="color:#71a83b">{{localize('habitacion')}} </span>
+                        <br><span style="color:black ;font-weight: bold;">{{answer.habitacion}}</span>
+                        <br>
+                        <hr>
+                        <span style="color:#71a83b">{{localize('empresa')}}</span>
+                        <br><span style="color:black ;font-weight: bold;">{{answer.empresa}}</span>
+                        <br>
+                        <span style="color:#71a83b">{{localize('telefono')}} </span>
+                        <br><span style="color:black ;font-weight: bold;">{{answer.telempresa}}</span>
+                        <br>
+
+                    </div>
+
+                    <!--<template is="dom-repeat" items="[[_toArray(answer)]]">-->
+                        <!--<template is="dom-if" if="[[!_compare(item.key,'user_fullname','telefono')]]">-->
+                            <!--<span style="color:#71a83b">{{item.key}}</span>-->
+                            <!--<br><span style="color:black; ">{{item.value}}</span>-->
+                            <!--<br>-->
+                            <!--<hr>-->
+                        <!--</template>-->
+                    <!--</template>-->
+                </div>
+            </div>
+
+        </div>
+
+    </template>
+    <script>
+        Polymer({
+
+            is: 'polymer1-element-checkReservations',
+
+            behaviors: [
+                Polymer.AppLocalizeBehavior
+            ],
+            properties: {
+                debug: {
+                    tyoe: Boolean,
+                    value: false
+                },
+                username: {
+                    type: String,
+                    value: ""
+                },
+                user: {
+                    type: String,
+                    value: "{{inputData}}"
+                },
+                answer: {
+                    type: Array,
+                    reflectToAttribute: true,
+                    notify: true
+                },
+                errorMessage: {
+                    type: String,
+                    notify: true,
+                },
+                show: {
+                    type: Boolean,
+                    value: false
+                },
+                countryValue: {
+                    type: String,
+                    observer: '_observer'
+                },
+                language: {
+                    value: 'en',
+                    notify: true
+                },
+                languageEN: {
+                    type: Boolean,
+                    value: true,
+                    notify: true
+                },
+                hostValue: {
+                    type: String,
+                    observer: '_observer'
+                },
+                resources: {
+                    value: function () {
+                        return {
+                            'en': {
+                                'tittle': 'Contract search',
+                                'subtittle': 'Indicates the car licence number',
+                                'input': 'Licence number',
+                                'text': 'If your accommodation doesn\'t have a general pick-up point you will have to wait outside the reception, never inside, at a visible point for the driver. Please be ready 5/10 minutes before the informed pick-up time at the advised place.',
+                                'button': 'Search',
+                                'error': 'Licence number is needed!',
+                                'nombrecliente':'Client name',
+                                'telefono':'Phone',
+                                'hotel':'Hotel name',
+                                'habitacion':'Room Number',
+                                'empresa':'Rent a Car Company',
+                            },
+                            'es': {
+                                'tittle': 'Buscar Contrato',
+                                'subtittle': 'Indicar numero de matricula',
+                                'input': 'Matricula numero?',
+                                'text': 'Si su alojamiento no tiene un punto de recogida general tendrá que esperar fuera de la recepción, nunca dentro, en un punto visible para el conductor. Por favor, esté listo 5/10 minutos antes de la recogida informada en el lugar indicado.',
+                                'button': 'Buscar',
+                                'error': 'Se necesita la matricula!',
+                                'nombrecliente':'Nómbre del cliente',
+                                'telefono':'Teléfono',
+                                'hotel':'Nombre de hotel',
+                                'habitacion':'Número de habitacion',
+                                'empresa':'Compania de renta car',
+                            }
+                        }
+                    }
+                }
+            },
+            listeners: {
+                'iron-form-response': 'formResponse',
+                'iron-form-submit': 'formSubmit',
+                'iron-form-error': 'formError'
+            },
+            _observer: function (v) {
+                this.language = v;
+            },
+            ready: function () {
+                var userLang = navigator.language || navigator.userLanguage;
+                if (userLang == "en-GB" || userLang == "en-US") {
+                    this.language = 'en';
+                    this.languageEN = true;
+                } else {
+                    this.language = 'es';
+                    this.languageEN = false;
+                }
+            },
+            _toArray: function (obj) {
+                return Object.keys(obj).map(function (key) {
+                    return {
+                        key: key,
+                        value: obj[key]
+                    };
+                });
+            },
+
+            _compare: function (a, b, c) {
+                if (a === b || a === c) return true;
+            },
+            formSubmit: function (event) {
+                this.$$('#spinner').active = 'true';
+                this.$$('#spinner').hidden = 'false';
+                this.$$('.output').innerHTML = JSON.stringify(event.detail);
+            },
+
+            formResponse: function (event, response) {
+                console.log("Event Detail");
+                console.log(response.xhr);
+                this.$$('#spinner').active = 'false';
+                this.$$('#spinner').hidden = 'true';
+                if (200 === response.xhr.status) {
+                    var datalogin = response.xhr;
+                    console.log("RESPONSE");
+                    console.log(datalogin.response);
+                    this.$$('.outputServer').innerHTML = datalogin.response.message;
+                    if (datalogin.response.result == "ok") {
+                        this.answer = datalogin.response.service;
+                        this.$$('#respuesta').style.display = 'block';
+                        this.errorMessage = [];
+                        this.show = true;
+                    } else {
+                        this.answer = [];
+                            this.errorMessage = datalogin.response.message ;
+                            this.$$('#respuesta').style.display = 'block';
+                        this.$$('.outputServer').innerHTML = datalogin.response.message;
+                    }
+                } else {
+                    this.$$('.outputServer').innerHTML = "Mysql ERROR";
+                    app.session = false;
+                }
+
+            },
+            formError: function (event) {
+                this.$$('.outputServer').innerHTML = event.detail.error;
+            }
+
+        });
+
+        function _submit(event) {
+            Polymer.dom(event).localTarget.parentElement.submit();
+        }
+
+    </script>
+</dom-module>
+
