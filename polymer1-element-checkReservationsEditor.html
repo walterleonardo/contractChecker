@@ -1,0 +1,527 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="shared-styles.html">
+
+<link rel="import" href="bower_components/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="bower_components/paper-input/paper-input.html">
+<link rel="import" href="bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="bower_components/paper-item/paper-item.html">
+<link rel="import" href="bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="bower_components/iron-form/iron-form.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="bower_components/app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="bower_components/liquid-switch/liquid-switch.html">
+<link rel="import" href="bower_components/paper-input-date-picker/paper-input-date-picker.html">
+
+
+<!--
+`polymer1-elem01`
+@demo demo/index.html
+-->
+
+<dom-module id="polymer1-element-checkReservations">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+                padding: 10px;
+            }
+
+            paper-dropdown-menu {
+                width: 98%;
+            }
+
+            table {
+                font-family: arial, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            td, th {
+                border: 1px solid #dddddd;
+                text-align: left;
+            }
+
+            tr:nth-child(even) {
+                background-color: #dddddd;
+            }
+
+            .card {
+                box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+            }
+        </style>
+        <title>Reservation checker</title>
+
+        <div class="container flex-center-justified">
+            <div class="card">
+                <select id='lang' name='lang' class='language-select' value="{{hostValue::change}}">
+                    <option id='en' value='en' selected="{{!languageEN}}">English</option>
+                    <option id='es' value='es' selected="{{!languageEN}}">Spanish</option>
+                </select>
+                <h1>{{localize('tittle')}}</h1>
+
+                <h3>{{localize('subtittle')}}</h3>
+
+
+                <form is="iron-form" method="get" action="http://rest001.walii.es/index.php?"
+                      id="formLogin">
+                    <paper-input char-counter error-message="{{localize('error')}}" name="p" value="{{answer.carid}}"
+                                 label="{{localize('input')}}" maxlength="25" required></paper-input>
+                    <paper-button raised onclick="_submit(event)"> {{localize('button')}}</paper-button>
+                    <paper-spinner id="spinner" hidden></paper-spinner>
+                    <h2 style="color: red; font-style: oblique">{{errorMessage}} </h2>
+                    <br><br>
+                    <!--<h3>{{localize('text')}}</h3>-->
+                </form>
+
+                <form is="iron-form" method="get" action="http://rest001.walii.es/index.php?"
+                      id="formLogin">
+                    <paper-input char-counter error-message="{{localize('error')}}" name="update" value="true"
+                                 hidden></paper-input>
+                    <paper-input char-counter error-message="{{localize('error')}}" name="token" value="{{token}}"
+                                 hidden></paper-input>
+                    <paper-input char-counter error-message="{{localize('error')}}" name="carid"
+                                 value="{{answer.carid}}"
+                                 label="{{localize('carid')}}" maxlength="25" required></paper-input>
+                    <paper-input char-counter error-message="{{localize('error')}}" name="contractid"
+                                 value="{{answer.contractid}}"
+                                 label="{{localize('contrato')}}" maxlength="25" required></paper-input>
+                    <paper-input char-counter error-message="{{localize('error')}}" name="user_fullname"
+                                 value="{{answer.user_fullname}}"
+                                 label="{{localize('nombrecliente')}}" maxlength="25" required></paper-input>
+
+                    <paper-input char-counter error-message="{{localize('error')}}" name="user_email"
+                                 value="{{answer.user_email}}"
+                                 label="{{localize('email')}}" maxlength="25" required></paper-input>
+                    <paper-input char-counter error-message="{{localize('error')}}" name="phone"
+                                 value="{{answer.phone}}"
+                                 label="{{localize('telefono')}}" maxlength="25" required></paper-input>
+                    <!--<paper-input char-counter error-message="{{localize('error')}}" name="status"-->
+                                 <!--value="{{activo}}"-->
+                                 <!--label="{{localize('estado')}}" maxlength="25" required></paper-input>-->
+
+
+                    <vaadin-date-picker name="checkin" id="d0" label="{{localize('checkin')}}" min="21-12-2016"
+                                        max="21-12-2046" initial-position="{{today}}" required
+                                        value="{{answer.checkin}}" required="true">
+                    </vaadin-date-picker>
+                    <vaadin-date-picker name="checkout" id="d1" label="{{localize('checkout')}}"
+                                        min="{{answer.checkin}}" max="21-12-2046" required value="{{answer.checkout}}"
+                                        required="true">
+                    </vaadin-date-picker>
+                    <paper-input name="days" id="n" label="{{localize('days')}}" disabled></paper-input>
+
+                    <paper-input char-counter error-message="{{localize('error')}}" name="hotel"
+                                 value="{{answer.hotel}}"
+                                 label="{{localize('hotel')}}" maxlength="25" required></paper-input>
+                    <paper-input char-counter error-message="{{localize('error')}}" name="room" value="{{answer.room}}"
+                                 label="{{localize('habitacion')}}" maxlength="25" required></paper-input>
+                    <paper-input char-counter error-message="{{localize('error')}}" name="address"
+                                 value="{{answer.address}}"
+                                 label="{{localize('address')}}" maxlength="25" required></paper-input>
+                    <br>
+
+                    <paper-button raised onclick="_submit(event)"> Add/Modify</paper-button>
+                    <paper-spinner id="spinner" hidden></paper-spinner>
+                    <br><br>
+                </form>
+
+                <template is="dom-if" if="[[answer.user_id]]">
+
+                    <form is="iron-form" method="get" action="http://rest001.walii.es/index.php?"
+                          id="formLogin">
+                        <paper-input char-counter error-message="{{localize('error')}}" name="delete" value="true"
+                                     hidden></paper-input>
+                        <paper-input char-counter error-message="{{localize('error')}}" name="token" value="{{token}}"
+                                     hidden></paper-input>
+                        <paper-input char-counter error-message="{{localize('error')}}" name="user_id"
+                                     value="{{answer.user_id}}"
+                                     label="{{localize('input')}}" maxlength="25" hidden></paper-input>
+                        <paper-button raised onclick="_submit(event)">DELETE</paper-button>
+                        <paper-spinner id="spinner" hidden></paper-spinner>
+                        <h2 style="color: red; font-style: oblique">{{errorMessage}} </h2>
+                        <br><br>
+                    </form>
+                    <hr>
+                </template>
+                <div hidden="[[!debug]]">
+                    <h2>Test information TO DELETE</h2>
+                    {"result":"ok","service":{"flight":"FR3542","preferredVehicle":"","leadName":"Jessica Smeets x
+                    2","office":"Ibiza","total":80.37,"pickupTime":"09:00","startddmmyyyy":"27/04/2017","iva":7.31,"id":24,"agencyReference":"TIH0000742T","direction":"OUTBOUND","comments":"PRIVATE
+                    TRANSFER = 80,37 â‚¬ PT","agency":"WEB INVISA
+                    HOTELES","flightDate":"2017-Apr-27","created":"2017-04-12T13:10:39.196","pax":2,"flightOriginOrDestination":"EINDHOVEN","start":{"year":2017,"month":"APRIL","dayOfMonth":27,"dayOfWeek":"THURSDAY","era":"CE","dayOfYear":117,"leapYear":false,"monthValue":4,"chronology":{"calendarType":"iso8601","id":"ISO"}},"dropoff":"Aeropuerto
+                    / Airport Ibiza","pickup":"INVISA HOTELES CLUB CALA
+                    BLANCA","pickupResort":"Figueral","valued":true,"purchaseValued":false,"dropoffResort":"Ibiza
+                    ","pickupDate":"Thu 27
+                    Apr","transferType":"PRIVATE","flightTime":"11:50","locator":12,"totalCost":0.0,"providers":"IbizaTours
+                    & IslandBus","status":"ACTIVE","base":73.06},"message":"Found booking with reference TIH0000742T"}
+                    <h3>Output</h3>
+                    <div class="output"></div>
+                    <br>
+                    <h3>Answer from server</h3>
+                    <div class="outputServer"></div>
+                    <br>
+                </div>
+
+
+                <div id="respuesta" class="respuesta">
+                    <h2 style="color: red; font-style: oblique">{{errorMessage}} </h2>
+
+                </div>
+            </div>
+
+        </div>
+
+    </template>
+    <script>
+        Polymer({
+
+            is: 'polymer1-element-checkReservations',
+
+            behaviors: [
+                Polymer.AppLocalizeBehavior
+            ],
+            properties: {
+                debug: {
+                    tyoe: Boolean,
+                    value: false
+                },
+                token: {
+                    type: String,
+                    value: "jodete"
+                },
+                username: {
+                    type: String,
+                    value: ""
+                },
+                user: {
+                    type: String,
+                    value: "{{inputData}}"
+                },
+                answer: {
+                    type: Array,
+                    reflectToAttribute: true,
+                    notify: true
+                },
+                errorMessage: {
+                    type: String,
+                    notify: true,
+                },
+                show: {
+                    type: Boolean,
+                    value: false
+                },
+                countryValue: {
+                    type: String,
+                    observer: '_observer'
+                },
+                language: {
+                    value: 'en',
+                    notify: true
+                },
+                languageEN: {
+                    type: Boolean,
+                    value: true,
+                    notify: true
+                },
+                hostValue: {
+                    type: String,
+                    observer: '_observer'
+                },
+                activo: {
+                    type:Boolean,
+                    value:false,
+                    notify: true
+                },
+                today: {
+                    //include today date to the attr today
+                    value: function () {
+                        return new Date().toISOString().substring(0, 10);
+                    }
+                },
+                i18n: {
+                    type: Object,
+                    value: {
+                        // An array with the full names of months starting
+                        // with January.
+                        monthNames: [
+                            'January', 'February', 'March', 'April', 'May',
+                            'June', 'July', 'August', 'September',
+                            'October', 'November', 'December'
+                        ],
+
+                        // An array of weekday names starting with Sunday. Used
+                        // in screen reader announcements.
+                        weekdays: [
+                            'Sunday', 'Monday', 'Tuesday', 'Wednesday',
+                            'Thursday', 'Friday', 'Saturday'
+                        ],
+
+                        // An array of short weekday names starting with Sunday.
+                        // Displayed in the calendar.
+                        weekdaysShort: [
+                            'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'
+                        ],
+
+                        // An integer indicating the first day of the week
+                        // (0 = Sunday, 1 = Monday, etc.).
+                        firstDayOfWeek: 0,
+
+                        // Used in screen reader announcements along with week
+                        // numbers, if they are displayed.
+                        week: 'Week',
+
+                        // Translation of the Calendar icon button title.
+                        calendar: 'Calendar',
+
+                        // Translation of the Clear icon button title.
+                        clear: 'Clear',
+
+                        // Translation of the Today shortcut button text.
+                        today: 'ToDay',
+
+                        // Translation of the Cancel button text.
+                        cancel: 'Cancel',
+
+                        // A function to format given `Date` object as
+                        // date string.
+                        formatDate: function(d) {
+                            // returns a string representation of the given
+                            // Date object in 'MM/DD/YYYY' -format
+                        },
+
+                        // A function to parse the given text to a `Date`
+                        // object. Must properly parse (at least) text
+                        // formatted by `formatDate`.
+                        // Setting the property to null will disable
+                        // keyboard input feature.
+                        parseDate: function(text) {
+                            // Parses a string in 'MM/DD/YY', 'MM/DD' or 'DD' -format to
+                            // a Date object
+                        },
+
+                        // A function to format given `monthName` and
+                        // `fullYear` integer as calendar title string.
+                        formatTitle: function(monthName, fullYear) {
+                            return monthName + ' ' + fullYear;
+                        }
+                    }
+                },
+                resources: {
+                    value: function () {
+                        return {
+                            'en': {
+                                'tittle': 'Contract add/modify/delete',
+                                'subtittle': 'Indicates the car licence number to search',
+                                'input': 'Licence number',
+                                'text': 'If your accommodation doesn\'t have a general pick-up point you will have to wait outside the reception, never inside, at a visible point for the driver. Please be ready 5/10 minutes before the informed pick-up time at the advised place.',
+                                'button': 'Search',
+                                'error': 'Licence number is needed!',
+                                'nombrecliente': 'Client name',
+                                'carid': 'Car id (plate)',
+                                'email': 'Client email',
+                                'contrato': 'Contract id',
+                                'telefono': 'Phone',
+                                'hotel': 'Hotel name',
+                                'habitacion': 'Room Number',
+                                'empresa': 'Rent a Car Company',
+                                'estado': 'Status',
+                                'checkin': 'Checkin Date',
+                                'checkout': 'Checkout Date',
+                                'address': 'Address',
+                                'detail': 'Detail',
+                                'days': 'Days',
+                            },
+                            'es': {
+                                'tittle': 'Agregar/modificar/borrar Contrato',
+                                'subtittle': 'Indicar numero de matricula para buscar',
+                                'input': 'Matricula numero?',
+                                'text': 'Si su alojamiento no tiene un punto de recogida general tendrá que esperar fuera de la recepción, nunca dentro, en un punto visible para el conductor. Por favor, esté listo 5/10 minutos antes de la recogida informada en el lugar indicado.',
+                                'button': 'Buscar',
+                                'error': 'Se necesita la matricula!',
+                                'nombrecliente': 'Nómbre del cliente',
+                                'carid': 'Numero de Matricula',
+                                'email': 'Email del cliente',
+                                'contrato': 'Numero de contrato',
+                                'telefono': 'Teléfono',
+                                'hotel': 'Nombre de hotel',
+                                'habitacion': 'Número de habitacion',
+                                'empresa': 'Compania de renta car',
+                                'estado': 'Estado',
+                                'checkin': 'Fecha inicio',
+                                'checkout': 'Fecha final',
+                                'address': 'Dirección',
+                                'detail': 'Detalles',
+                                'days': 'Días',
+                            }
+                        }
+                    }
+                }
+            },
+            listeners: {
+                'iron-form-response': 'formResponse',
+                'iron-form-submit': 'formSubmit',
+                'iron-form-error': 'formError',
+                'iron-form-response': 'formResponseEditor',
+                'iron-form-submit': 'formSubmitEditor',
+                'iron-form-error': 'formErrorEditor'
+            },
+            _observer: function (v) {
+                this.language = v;
+            },
+            ready: function () {
+                var d0 = this.$.d0;
+                var d1 = this.$.d1;
+                var n = this.$.n;
+                var today = this.today;
+
+                //		document.querySelector('vaadin-date-picker').set('i18n.firstDayOfWeek', 1);//SET MONDAY FIRST DATE OF WEEK
+
+                d0.addEventListener('value-changed', function () {
+                    if (d0.hasValue) {
+                        /*
+                         console.log("Set D1 with min D0 value");
+                         console.log("D0 value " + d0.value);
+                         */
+                        d1.setAttribute("min", d0.value);
+                        d1.setAttribute("initial-position", d0.value);
+                    }
+                    if (d0.hasValue && d1.hasValue) {
+                        console.log("d0=" + d0.value);
+                        console.log("d1=" + d1.value);
+                        n.value = daysBetween(Date.parse(d0.value), Date.parse(d1.value));
+                        console.log("n=" + n.value);
+                        console.log(today);
+                        console.log(this.activo);
+                        if (d0.value <= today && d1.value >= today)
+                        {
+                            this.activo = true;
+                        }
+                    }
+                });
+                d1.addEventListener('value-changed', function () {
+                    if (d0.hasValue && d1.hasValue) {
+                        console.log("d0=" + d0.value);
+                        console.log("d1=" + d1.value);
+                        n.value = daysBetween(Date.parse(d0.value), Date.parse(d1.value));
+                        console.log("n=" + n.value);
+                    }
+                });
+
+
+                //languaje browser detector
+                var userLang = navigator.language || navigator.userLanguage;
+                if (userLang == "en-GB" || userLang == "en-US") {
+                    this.language = 'en';
+                    this.languageEN = true;
+                } else {
+                    this.language = 'es';
+                    this.languageEN = false;
+                }
+            },
+
+            _toArray: function (obj) {
+                return Object.keys(obj).map(function (key) {
+                    return {
+                        key: key,
+                        value: obj[key]
+                    };
+                });
+            },
+
+            _compare: function (a, b, c) {
+                if (a === b || a === c) return true;
+            },
+            daysBetween: function (one, another) {
+                return Math.round(Math.abs((+one) - (+another)) / 8.64e7);
+            },
+            formSubmit: function (event) {
+                this.$$('#spinner').active = 'true';
+                this.$$('#spinner').hidden = 'false';
+                this.$$('.output').innerHTML = JSON.stringify(event.detail);
+            },
+            formSubmitEditor: function (event) {
+                this.$$('#spinner').active = 'true';
+                this.$$('#spinner').hidden = 'false';
+                this.$$('.output').innerHTML = JSON.stringify(event.detail);
+            },
+
+            formResponse: function (event, response) {
+                console.log("Event Detail");
+                console.log(response.xhr);
+                this.$$('#spinner').active = 'false';
+                this.$$('#spinner').hidden = 'true';
+                if (200 === response.xhr.status) {
+                    var datalogin = response.xhr;
+                    console.log("RESPONSE");
+                    console.log(datalogin.response);
+                    this.$$('.outputServer').innerHTML = datalogin.response.message;
+                    if (datalogin.response.result == "ok") {
+                        this.answer = datalogin.response.service;
+                        this.$$('#respuesta').style.display = 'block';
+                        this.errorMessage = [];
+                        this.show = true;
+                    } else {
+                        this.answer = [];
+                        this.errorMessage = datalogin.response.message;
+                        this.$$('#respuesta').style.display = 'block';
+                        this.$$('.outputServer').innerHTML = datalogin.response.message;
+                    }
+                } else {
+                    this.$$('.outputServer').innerHTML = "Mysql ERROR";
+                    app.session = false;
+                }
+
+            },
+            formResponseEditor: function (event, response) {
+                console.log("Event Detail");
+                console.log(response.xhr);
+                this.$$('#spinner').active = 'false';
+                this.$$('#spinner').hidden = 'true';
+                if (200 === response.xhr.status) {
+                    var datalogin = response.xhr;
+                    console.log("RESPONSE");
+                    console.log(datalogin.response);
+                    this.$$('.outputServer').innerHTML = datalogin.response.message;
+                    if (datalogin.response.result == "ok") {
+                        this.answer = datalogin.response.service;
+                        this.$$('#respuesta').style.display = 'block';
+                        this.errorMessage = [];
+                        this.show = true;
+                    } else {
+                        this.answer = [];
+                        this.errorMessage = datalogin.response.message;
+                        this.$$('#respuesta').style.display = 'block';
+                        this.$$('.outputServer').innerHTML = datalogin.response.message;
+                    }
+                } else {
+                    this.$$('.outputServer').innerHTML = "Mysql ERROR";
+                    app.session = false;
+                }
+
+            },
+            formError: function (event) {
+                this.$$('.outputServer').innerHTML = event.detail.error;
+            },
+            formErrorEditor: function (event) {
+                this.$$('.outputServer').innerHTML = event.detail.error;
+            }
+
+        });
+
+
+
+        function daysBetween(one, another) {
+            return Math.round(Math.abs((+one) - (+another)) / 8.64e7);
+        }
+        function _submit(event) {
+            Polymer.dom(event).localTarget.parentElement.submit();
+        }
+
+    </script>
+</dom-module>
+

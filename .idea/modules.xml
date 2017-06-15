@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/polymer-ContractChecker.iml" filepath="$PROJECT_DIR$/polymer-ContractChecker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/polymer-ContractCheckerEditor.iml" filepath="$PROJECT_DIR$/polymer-ContractCheckerEditor.iml" />
     </modules>
   </component>
 </project>
